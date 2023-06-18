@@ -1,9 +1,16 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class TopDownPlayerController : MonoBehaviour
 {
     [SerializeField] float speed = 5f;
     [SerializeField] float runMultiplier = 1.5f;
+    
+
+    //[SerializeField] private Tilemap collisionTilemap;
+    //[SerializeField] private string collisionLayerName;
+    
+
 
     Rigidbody2D rb;
     Collider2D col;
@@ -58,5 +65,49 @@ public class TopDownPlayerController : MonoBehaviour
         }
         else
             anim.SetBool("IsMoving", false);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Door1"))
+        {
+            // Trigger the event or action you desire
+            transform.position = new Vector3(-7.749203f, -7.414156f, 0f);
+        }
+        if (collision.gameObject.CompareTag("Door3"))
+        {
+            // Trigger the event or action you desire
+            transform.position = new Vector3(-0.5699998f, -3.31f, 0f);
+        }
+        if (collision.gameObject.CompareTag("Door2"))
+        {
+            // Trigger the event or action you desire
+            transform.position = new Vector3(13.74919f, 2.6414481f, 0f);
+        }
+        if (collision.gameObject.CompareTag("Door4"))
+        {
+            // Trigger the event or action you desire
+            transform.position = new Vector3(13.57595f, -15.28938f, 0f);
+        }
+        if (collision.gameObject.CompareTag("Door5"))
+        {
+            // Trigger the event or action you desire
+            transform.position = new Vector3(6.066393f, 2.836445f, 0f);
+        }
+        if (collision.gameObject.CompareTag("Door6"))
+        {
+            // Trigger the event or action you desire
+            transform.position = new Vector3(27.24244f, -7.389411f, 0f);
+        }
+        if (collision.gameObject.CompareTag("Door7"))
+        {
+            // Trigger the event or action you desire
+            transform.position = new Vector3(28.23417f, -2.243476f, 0f);
+        }
+        if (collision.gameObject.CompareTag("Door8"))
+        {
+            // Trigger the event or action you desire
+            transform.position = new Vector3(6.165025f, -14.22836f, 0f);
+        }
     }
 }

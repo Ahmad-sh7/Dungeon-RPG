@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Door2
+  - Door1
+  - Door3
+  - Door4
+  - Door5
+  - Door6
+  - Door7
+  - Door8
   layers:
   - Default
   - TransparentFX
@@ -50,6 +58,30 @@ TagManager:
   - name: Obejcts
     uniqueID: 2276408431
     locked: 0
-  - name: Player
+  - name: Door1
     uniqueID: 2129311481
+    locked: 0
+  - name: Door2
+    uniqueID: 1340571151
+    locked: 0
+  - name: Door3
+    uniqueID: 2868293295
+    locked: 0
+  - name: Door4
+    uniqueID: 1256160179
+    locked: 0
+  - name: Door5
+    uniqueID: 491174523
+    locked: 0
+  - name: Door6
+    uniqueID: 476678467
+    locked: 0
+  - name: Door7
+    uniqueID: 32630113
+    locked: 0
+  - name: Door8
+    uniqueID: 4016172357
+    locked: 0
+  - name: Player
+    uniqueID: 694146563
     locked: 0
