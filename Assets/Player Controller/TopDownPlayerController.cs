@@ -1,15 +1,15 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using static UnityEngine.PlayerPrefs;
 
 public class TopDownPlayerController : MonoBehaviour
 {
     [SerializeField] float speed = 5f;
     [SerializeField] float runMultiplier = 1.5f;
-    
+    public static Vector3 savedPosition;
+    public GameObject prefab;
 
-    //[SerializeField] private Tilemap collisionTilemap;
-    //[SerializeField] private string collisionLayerName;
-    
 
 
     Rigidbody2D rb;
@@ -22,6 +22,7 @@ public class TopDownPlayerController : MonoBehaviour
 
     private void Awake()
     {
+        LoadPlayerPosition();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
@@ -33,6 +34,10 @@ public class TopDownPlayerController : MonoBehaviour
     {
         GetInput();
         SetAnimations();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            PerformCollisionAction();
+        }
     }
 
     private void GetInput()
@@ -109,5 +114,44 @@ public class TopDownPlayerController : MonoBehaviour
             // Trigger the event or action you desire
             transform.position = new Vector3(6.165025f, -14.22836f, 0f);
         }
+    }
+    private void PerformCollisionAction()
+    {
+        GameObject[] slimeObjects1 = GameObject.FindGameObjectsWithTag("Slime1");
+        GameObject[] slimeObjects2 = GameObject.FindGameObjectsWithTag("Slime2");
+        foreach (GameObject slimeObject in slimeObjects1)
+        {
+            if (Vector2.Distance(transform.position, slimeObject.transform.position) < 1f)
+            {
+                SavePlayerPosition();
+                SceneManager.LoadScene("FirstEnemy");
+                break;
+            }
+        }
+        foreach (GameObject slimeObject in slimeObjects2)
+        {
+            if (Vector2.Distance(transform.position, slimeObject.transform.position) < 1f)
+            {
+                SavePlayerPosition();
+                SceneManager.LoadScene("SecondEnemy");
+                break;
+            }
+        }
+
+    }
+    private void SavePlayerPosition()
+    {
+        PlayerPrefs.SetFloat("PlayerPositionX", transform.position.x);
+        PlayerPrefs.SetFloat("PlayerPositionY", transform.position.y);
+        PlayerPrefs.SetFloat("PlayerPositionZ", transform.position.z);
+    }
+
+    private void LoadPlayerPosition()
+    {
+        float posX = PlayerPrefs.GetFloat("PlayerPositionX");
+        float posY = PlayerPrefs.GetFloat("PlayerPositionY");
+        float posZ = PlayerPrefs.GetFloat("PlayerPositionZ");
+        Vector3 savedPosition = new Vector3(posX, posY, posZ);
+        transform.position = savedPosition;
     }
 }

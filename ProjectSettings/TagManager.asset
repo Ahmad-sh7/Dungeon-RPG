@@ -12,6 +12,10 @@ TagManager:
   - Door6
   - Door7
   - Door8
+  - Slime1
+  - Slime2
+  - Slime3
+  - Slime4
   layers:
   - Default
   - TransparentFX

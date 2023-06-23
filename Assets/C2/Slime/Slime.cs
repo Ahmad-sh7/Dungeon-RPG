@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Slime : MonoBehaviour
 {
@@ -27,4 +28,5 @@ public class Slime : MonoBehaviour
             animationTimer += Time.deltaTime;
         }
     }
+
 }
