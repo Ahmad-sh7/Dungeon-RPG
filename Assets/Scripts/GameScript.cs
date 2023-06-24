@@ -16,8 +16,13 @@ public class GameScript : MonoBehaviour
     private float attackChange = 65f;
     private static bool noAction = false;
     private enum logColors { Red, Magenta, Green, Cyan, Black, Yellow, White };
+    Animator anim;
 
 
+    private void Awake()
+    {
+        anim = Enemy.GetComponent<Animator>();
+    }
     void Start()
     {
         InitializeGame();
@@ -31,13 +36,18 @@ public class GameScript : MonoBehaviour
             if (playerTurn)
             {
                 // Player's turn
-                yield return new WaitForSeconds(1.5f); // Delay between player turns
-                // Handle player input or button clicks here
+                yield return new WaitForSeconds(3f); // Delay between player turns
+
+                //yield return new WaitForSeconds(2f);
+                anim.SetBool("Attacks", false);
             }
             else
             {
                 // AI's turn
-                yield return new WaitForSeconds(1.5f); // Delay between AI turns
+                yield return new WaitForSeconds(1f); // Delay between AI turns
+
+
+                anim.SetBool("isHitted", false);
                 AiTurn();
             }
         }
@@ -50,25 +60,25 @@ public class GameScript : MonoBehaviour
         playerTurn = true;
         defend = false;
         charged = false;
-        
+
     }
 
-    
+
     public void PlayerAttack()
     {
         if (!noAction)
         {
+            anim.SetBool("isHitted", true);
             int randDamage = Random.Range(playerDamageRange[0], playerDamageRange[1] + 1);
             aiHP -= randDamage;
-            playerTurn = false;
-
+            playerTurn = false; 
             Print($"You attacked the AI with {randDamage} Damage.", logColors.Yellow, true);
-
             if (!CheckWinner())
                 CurrentHP();
         }
-        
+
     }
+
     public void PlayerDefend()
     {
         if (!noAction)
@@ -78,7 +88,7 @@ public class GameScript : MonoBehaviour
 
             Print("You won't get any Damage the next Round.", logColors.Yellow, true);
         }
-        
+
     }
     public void PlayerHeal()
     {
@@ -90,13 +100,14 @@ public class GameScript : MonoBehaviour
             Print("You healed your HP.", logColors.Yellow, true);
             CurrentHP();
         }
-        
+
     }
     // Handle the AI turn
     void AiTurn()
     {
         if (!noAction)
         {
+
             if (charged)
             {
                 playerHP = defend ? playerHP : 0;
@@ -113,6 +124,7 @@ public class GameScript : MonoBehaviour
                 if (chance < attackChange)
                 {
                     // Attack
+                    anim.SetBool("Attacks", true);
                     int randDamage = Random.Range(aiDamageRange[0], aiDamageRange[1] + 1);
                     playerHP -= defend ? 0 : randDamage;
 
@@ -135,7 +147,7 @@ public class GameScript : MonoBehaviour
         {
             infoText.text = "";
         }
-        
+
     }
     public void PlayerRun()
     {
