@@ -44,7 +44,7 @@ public class GameScript : MonoBehaviour
             else
             {
                 // AI's turn
-                yield return new WaitForSeconds(0.5f); // Delay between AI turns
+                yield return new WaitForSeconds(1f); // Delay between AI turns
 
 
                 anim.SetBool("isHitted", false);
@@ -73,7 +73,6 @@ public class GameScript : MonoBehaviour
             aiHP -= randDamage;
             playerTurn = false; 
             Print($"You attacked the AI with {randDamage} Damage.", logColors.Yellow, true);
-            anim.SetBool("isHitted", false);
             if (!CheckWinner())
                 CurrentHP();
         }
