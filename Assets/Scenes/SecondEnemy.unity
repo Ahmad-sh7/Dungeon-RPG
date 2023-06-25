@@ -2767,7 +2767,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1016322866}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2140056269}
+        m_TargetAssemblyTypeName: SecondSceneLogic, Assembly-CSharp
+        m_MethodName: PlayerRun
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1929940292
 GameObject:
   m_ObjectHideFlags: 0
@@ -3063,6 +3075,7 @@ MonoBehaviour:
   attackBtn: {fileID: 1788783561}
   defendBtn: {fileID: 929868175}
   healBtn: {fileID: 446905054}
+  runBtn: {fileID: 1928245898}
   enemy: {fileID: 1006243328}
   infoObject: {fileID: 1897444964}
 --- !u!4 &2140056270

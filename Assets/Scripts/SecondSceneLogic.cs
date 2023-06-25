@@ -2,22 +2,15 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SecondSceneLogic : MonoBehaviour
 {
-    // "You attack. ´The enemy takes 2 damage."
-    // "Enemy attacks. You take 2 damage."
-    // "You defend."
-    // "The enemy attacks. You defended and don't take damage."
-    // "You heal yourself for 5 HP."
-    // "The enemy is charging a deadly attack."
-
-
     int playerHP, enemyHP;
-    bool playerTurn, playerDefendFlag;
+    bool playerTurn, playerDefendFlag, enemySuperAttack, gameOver;
     [SerializeField] TextMeshProUGUI infoTxt, hpTxt;
     [SerializeField] Image healBar;
-    [SerializeField] Button attackBtn, defendBtn, healBtn;
+    [SerializeField] Button attackBtn, defendBtn, healBtn, runBtn;
     [SerializeField] GameObject enemy, infoObject;
     Animator anim;
     AudioScript audioScript;
@@ -25,30 +18,31 @@ public class SecondSceneLogic : MonoBehaviour
     void Start()
     {
         audioScript = GameObject.Find("Audio Object").GetComponent<AudioScript>();
+        StartCoroutine(PerformRotationCoroutine());
         GameSetup();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!playerTurn) // Enemy's Turn
+        if (gameOver)
         {
-            // Play Enemy Logic
-            // Player Turn set to True
-            // playerTurn = true;
-            // StartCoroutine(PerformDelayCoroutine(2f));
-            // playerTurn = true;
-            // DeactivateButtons();
-            playerTurn = true;
-            // StartCoroutine(PerformSwitchTurnCoroutine(4f));
-            StartCoroutine(PerformEnemyAttackCoroutine());
-            // EnemyAttack();     
-        }
-        else
-        {
-            // Player Turn Logic
+            DeactivateButtons();
         }
 
+        if (!playerTurn && !gameOver) // Enemy's Turn
+        {
+            playerTurn = true;
+            float randomNumber = Random.Range(0f, 1f);
+
+            if (enemySuperAttack) // Start Enemy Super Attack
+                StartCoroutine(PerformSuperAttackCoroutine());
+            else if (randomNumber <= 0.8f && !enemySuperAttack) // Normal Attack
+                StartCoroutine(PerformEnemyAttackCoroutine());
+            else // Charge Enemy Super Attack
+                StartCoroutine(PerformChargeSuperAttackCoroutine());
+            
+        }
     }
 
     public void PlayerAttack()
@@ -60,10 +54,13 @@ public class SecondSceneLogic : MonoBehaviour
 
         int playerAttackValue = RandomNumberGenerator(4); // Generate random number between 1 and 4
         enemyHP -= playerAttackValue;
-        CheckEnemyHP();
-
+        
         string message = string.Format("You attack. The enemy takes {0} damage.", playerAttackValue);
-        UpdateInfoText(message);
+        
+        if (!gameOver)
+            UpdateInfoText(message);
+
+        CheckEnemyHP();
         infoObject.gameObject.SetActive(true);
         audioScript.PlayerAttackSFX();
 
@@ -98,7 +95,7 @@ public class SecondSceneLogic : MonoBehaviour
 
     public void PlayerRun()
     {
-        Debug.Log("Player Run");
+        LeaveScene();
     }
 
     private void EnemyAttack()
@@ -119,8 +116,33 @@ public class SecondSceneLogic : MonoBehaviour
 
         anim.SetTrigger("attack");
 
-        StartCoroutine(PerformUpdateInfoTextCoroutine());
+        CheckPlayerHP();
+        if (!gameOver)
+            StartCoroutine(PerformUpdateInfoTextCoroutine());
+        UpdateHealBar();   
+    }
+
+    private void EnemySuperAttack()
+    {
+        int enemyAttackValue = 7;
+        string message = !playerDefendFlag ? string.Format("Enemy attacks. You take {0} damage.", enemyAttackValue) : "The enemy attacks. You defended and don't take damage.";
+        UpdateInfoText(message);
+
+        if (!playerDefendFlag)
+        {
+            playerHP = (playerHP - enemyAttackValue) < 0 ? 0 : playerHP - enemyAttackValue;
+        }
+
+        playerDefendFlag = false;
+        enemySuperAttack = false;
+        anim.SetTrigger("attack"); // Should be Super Attack
+
+        CheckPlayerHP();
+        if (!gameOver)
+            StartCoroutine(PerformUpdateInfoTextCoroutine());
         UpdateHealBar();
+
+        
     }
 
     private void GameSetup()
@@ -129,7 +151,9 @@ public class SecondSceneLogic : MonoBehaviour
         enemyHP = 10;
         UpdateHealBar();
         playerTurn = true;
+        enemySuperAttack = false;
         playerDefendFlag = false;
+        gameOver = false;
         infoObject.gameObject.SetActive(false);
         anim = enemy.GetComponent<Animator>();
     }
@@ -163,6 +187,7 @@ public class SecondSceneLogic : MonoBehaviour
         attackBtn.interactable = false;
         defendBtn.interactable = false;
         healBtn.interactable = false;
+        runBtn.interactable = false;
     }
 
     private void ActivateButtons()
@@ -170,12 +195,7 @@ public class SecondSceneLogic : MonoBehaviour
         attackBtn.interactable = true;
         defendBtn.interactable = true;
         healBtn.interactable = true;
-    }
-
-    private IEnumerator PerformSwitchTurnCoroutine(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        ActivateButtons();
+        runBtn.interactable = true;
     }
 
     private IEnumerator PerformEnemyAttackCoroutine()
@@ -184,27 +204,68 @@ public class SecondSceneLogic : MonoBehaviour
         EnemyAttack();
     }
 
+    private IEnumerator PerformChargeSuperAttackCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        ChargeSuperAttack();
+    }
+
+    private void ChargeSuperAttack()
+    {
+        string message = "The enemy is charging a deadly attack.";
+        UpdateInfoText(message);
+
+        enemySuperAttack = true;
+
+        StartCoroutine(PerformUpdateInfoTextCoroutine());
+    }
+
+    private IEnumerator PerformSuperAttackCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        EnemySuperAttack();
+    }
+
 
     private void CheckEnemyHP()
     {
         if (enemyHP <= 0)
         {
             // Player Won
+            gameOver = true;
+            GameOverLogic();
         }
     }
 
-    /*
+    private void CheckPlayerHP()
+    {
+        if (playerHP <= 0)
+        {
+            // Enemy Won
+            gameOver = true;
+            GameOverLogic();
+        }
+    }
+
     private IEnumerator PerformRotationCoroutine()
     {
-        yield beak;
         while (true)
         {
-            // yield return new WaitForSeconds(2f);
-            // anim.SetTrigger("attack");
-
-            yield return new WaitForSeconds(rotateDelay);
+            yield return new WaitForSeconds(5f);
             anim.SetTrigger("rotate");
         }
     }
-    */
+
+    private void GameOverLogic()
+    {
+        string message = playerHP <= 0 ? "You Lost." : "You Won.";
+        UpdateInfoText(message);
+        infoObject.gameObject.SetActive(true);
+        Invoke("LeaveScene", 4f);
+    }
+
+    private void LeaveScene()
+    {
+        SceneManager.LoadScene("Game");
+    }
 }

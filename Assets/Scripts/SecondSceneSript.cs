@@ -6,11 +6,9 @@ using TMPro;
 
 public class SecondSceneSript : MonoBehaviour
 {
-    float rotateDelay = 5f;
-
     void Start()
     {
-        // StartCoroutine(PerformRotationCoroutine());
+        
     }
 
     // Update is called once per frame
@@ -19,8 +17,4 @@ public class SecondSceneSript : MonoBehaviour
         
     }
 
-    private void LeaveScene()
-    {
-
-    }
 }
