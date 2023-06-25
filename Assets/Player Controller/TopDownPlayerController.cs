@@ -22,6 +22,10 @@ public class TopDownPlayerController : MonoBehaviour
 
     private void Awake()
     {
+        if (!PlayerPrefs.HasKey("LoadedFromAnotherScene"))
+        {
+            PlayerPrefs.SetInt("LoadedFromAnotherScene", 0);
+        }
         LoadPlayerPosition();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
@@ -148,9 +152,18 @@ public class TopDownPlayerController : MonoBehaviour
 
     private void LoadPlayerPosition()
     {
-        float posX = PlayerPrefs.GetFloat("PlayerPositionX");
-        float posY = PlayerPrefs.GetFloat("PlayerPositionY");
-        float posZ = PlayerPrefs.GetFloat("PlayerPositionZ");
+        float posX = -0.8f, posY = -2f, posZ = 0f;
+        if (PlayerPrefs.GetInt("LoadedFromAnotherScene") == 1 )
+        {
+            PlayerPrefs.SetInt("LoadedFromAnotherScene", 0);
+            posX = PlayerPrefs.GetFloat("PlayerPositionX");
+            posY = PlayerPrefs.GetFloat("PlayerPositionY");
+            posZ = PlayerPrefs.GetFloat("PlayerPositionZ");
+        }
+        else
+        {
+            PlayerPrefs.SetInt("LoadedFromAnotherScene", 0);
+        }
         Vector3 savedPosition = new Vector3(posX, posY, posZ);
         transform.position = savedPosition;
     }

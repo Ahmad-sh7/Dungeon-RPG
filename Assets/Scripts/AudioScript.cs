@@ -6,7 +6,6 @@ public class AudioScript : MonoBehaviour
 {
     // Player SFX
     [SerializeField] AudioClip playerAttackSFX;
-    [SerializeField] AudioClip playerDamageSFX;
     [SerializeField] AudioClip playerDefendSFX;
     [SerializeField] AudioClip playerHealSFX;
 
@@ -25,12 +24,7 @@ public class AudioScript : MonoBehaviour
     {
         audioSource.PlayOneShot(playerAttackSFX, 0.5f);
     }
-
-    public void PlayerDamageSFX()
-    {
-        audioSource.PlayOneShot(playerDamageSFX, 0.5f);
-    }
-
+    
     public void PlayerDefendSFX()
     {
         audioSource.PlayOneShot(playerDefendSFX, 0.5f);
