@@ -36,7 +36,7 @@ public class SecondSceneLogic : MonoBehaviour
 
             if (enemySuperAttack) // Start Enemy Super Attack
                 StartCoroutine(PerformSuperAttackCoroutine());
-            else if (randomNumber <= 0.8f && !enemySuperAttack) // Normal Attack
+            else if (randomNumber <= 0.65f && !enemySuperAttack) // Normal Attack
                 StartCoroutine(PerformEnemyAttackCoroutine());
             else // Charge Enemy Super Attack
                 StartCoroutine(PerformChargeSuperAttackCoroutine());
@@ -260,6 +260,8 @@ public class SecondSceneLogic : MonoBehaviour
     {
         string message = playerHP <= 0 ? "You Lost." : "You Won.";
         UpdateInfoText(message);
+        Destroy(enemy);
+        audioScript.MuteSFX();
         infoObject.gameObject.SetActive(true);
         Invoke("LeaveScene", 4f);
     }

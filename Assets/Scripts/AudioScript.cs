@@ -39,4 +39,8 @@ public class AudioScript : MonoBehaviour
     {
         audioSource.PlayOneShot(enemyAttackSFX, 0.5f);
     }
+    public void MuteSFX()
+    {
+        audioSource.mute = true;
+    }
 }
