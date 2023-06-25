@@ -18,11 +18,10 @@ public class SecondSceneLogic : MonoBehaviour
     void Start()
     {
         audioScript = GameObject.Find("Audio Object").GetComponent<AudioScript>();
-        StartCoroutine(PerformRotationCoroutine());
+        // StartCoroutine(PerformRotationCoroutine());
         GameSetup();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (gameOver)
@@ -47,6 +46,7 @@ public class SecondSceneLogic : MonoBehaviour
 
     public void PlayerAttack()
     {
+        playerDefendFlag = false;
         playerTurn = false;
         DeactivateButtons();
 
@@ -81,6 +81,7 @@ public class SecondSceneLogic : MonoBehaviour
 
     public void PlayerHeal()
     {
+        playerDefendFlag = false;
         playerTurn = false;
         DeactivateButtons();
 
@@ -104,11 +105,9 @@ public class SecondSceneLogic : MonoBehaviour
         string message = !playerDefendFlag ? string.Format("Enemy attacks. You take {0} damage.", enemyAttackValue) : "The enemy attacks. You defended and don't take damage.";
         UpdateInfoText(message);
 
-        audioScript.EnemyAttackSFX();
-
         if (!playerDefendFlag)
         {
-            // audioScript.PlayerDamageSFX();
+            audioScript.EnemyAttackSFX();
             playerHP = (playerHP - enemyAttackValue) < 0 ? 0 : playerHP - enemyAttackValue;
         }
         
@@ -130,19 +129,19 @@ public class SecondSceneLogic : MonoBehaviour
 
         if (!playerDefendFlag)
         {
+            audioScript.EnemyAttackSFX();
             playerHP = (playerHP - enemyAttackValue) < 0 ? 0 : playerHP - enemyAttackValue;
         }
 
-        playerDefendFlag = false;
-        enemySuperAttack = false;
-        anim.SetTrigger("attack"); // Should be Super Attack
+        anim.SetTrigger("super");
 
         CheckPlayerHP();
         if (!gameOver)
             StartCoroutine(PerformUpdateInfoTextCoroutine());
         UpdateHealBar();
 
-        
+        playerDefendFlag = false;
+        enemySuperAttack = false;
     }
 
     private void GameSetup()
@@ -176,7 +175,10 @@ public class SecondSceneLogic : MonoBehaviour
 
     private IEnumerator PerformUpdateInfoTextCoroutine()
     {
-        yield return new WaitForSeconds(2f);
+        float delay = 2f;
+        if (enemySuperAttack)
+            delay = 4f;
+        yield return new WaitForSeconds(delay);
         infoObject.gameObject.SetActive(false);
         ActivateButtons();
     }
@@ -214,10 +216,8 @@ public class SecondSceneLogic : MonoBehaviour
     {
         string message = "The enemy is charging a deadly attack.";
         UpdateInfoText(message);
-
-        enemySuperAttack = true;
-
         StartCoroutine(PerformUpdateInfoTextCoroutine());
+        enemySuperAttack = true;
     }
 
     private IEnumerator PerformSuperAttackCoroutine()
@@ -266,6 +266,7 @@ public class SecondSceneLogic : MonoBehaviour
 
     private void LeaveScene()
     {
+        PlayerPrefs.SetInt("LoadedFromAnotherScene", 1);
         SceneManager.LoadScene("Game");
     }
 }

@@ -6,14 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class FirstScene : MonoBehaviour
 {
-    // "You attack. ´The enemy takes 2 damage."
-    // "Enemy attacks. You take 2 damage."
-    // "You defend."
-    // "The enemy attacks. You defended and don't take damage."
-    // "You heal yourself for 5 HP."
-    // "The enemy is charging a deadly attack."
-
-
     int playerHP, enemyHP;
     bool playerTurn, playerDefendFlag;
     bool chargeSuperAttack = false;
@@ -30,27 +22,13 @@ public class FirstScene : MonoBehaviour
         GameSetup();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!playerTurn) // Enemy's Turn
         {
-            // Play Enemy Logic
-            // Player Turn set to True
-            // playerTurn = true;
-            // StartCoroutine(PerformDelayCoroutine(2f));
-            // playerTurn = true;
-            // DeactivateButtons();
             playerTurn = true;
-            // StartCoroutine(PerformSwitchTurnCoroutine(4f));
             StartCoroutine(PerformEnemyAttackCoroutine());
-            // EnemyAttack();     
         }
-        else
-        {
-            // Player Turn Logic
-        }
-
     }
 
     public void PlayerAttack()
@@ -135,7 +113,6 @@ public class FirstScene : MonoBehaviour
 
                 if (!playerDefendFlag)
                 {
-                    // audioScript.PlayerDamageSFX();
                     playerHP = (playerHP - enemyAttackValue) < 0 ? 0 : playerHP - enemyAttackValue;
                 }
 
@@ -255,18 +232,4 @@ public class FirstScene : MonoBehaviour
         yield return new WaitForSeconds(3f);
         SceneManager.LoadScene("Game");
     }
-    /*
-    private IEnumerator PerformRotationCoroutine()
-    {
-        yield beak;
-        while (true)
-        {
-            // yield return new WaitForSeconds(2f);
-            // anim.SetTrigger("attack");
-
-            yield return new WaitForSeconds(rotateDelay);
-            anim.SetTrigger("rotate");
-        }
-    }
-    */
 }
